@@ -1,0 +1,7 @@
+#============= rild ==============
+allow rild app_data_file:dir search;
+allow rild app_data_file:file { read write open };
+allow rild unlabeled:dir { write search add_name };
+allow rild unlabeled:file { write getattr read create open append };
+allow rild unlabeled:sock_file write;
+allow rild mediaserver:unix_stream_socket connectto;

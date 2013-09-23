@@ -20,7 +20,7 @@ fi
 set -e
 QUIET=1
 BASE=`pwd`
-BRUTECRUSH="-brute"
+BRUTECRUSH="-brute -rem alla -reduce"
 TMPDIR=/tmp/opticharge-$$
 
 if [ -z "$BRUTE_PNGCRUSH" ]
@@ -50,6 +50,7 @@ fi
 if [ "$(which pngcrush)" != "" ];
 then
     optimize_png () {
+        #echo "Optimize $1"
         pngcrush -q ${BRUTECRUSH} $1 ${1}.out 1> /dev/null 2> /dev/null
         mv ${1}.out ${1}
     }

@@ -1,0 +1,24 @@
+#ifndef __BOARD_H__
+#define __BOARD_H__
+
+void board_init();
+const char *board_get_cmdline();
+
+/* Check defines */
+
+#if BOARD_UMTS_SHOLES || BOARD_UMTS_JORDAN || BOARD_UMTS_MILESTONE2
+
+#define BOARD_DEBUG_UART_BASE			0x49020000
+#define BOARD_WDTIMER2_BASE			0x48314000
+#define BOARD_MPU_INTC_BASE			0x48200000
+// Engle, 添加延迟复位，小清理. https://github.com/Quarx2k/android_device_moto_jordan-common/commit/3eb367cd54ec0a96fb12716fbc67a7696977dd01
+#define BOARD_GLOBAL_REG_PRM_BASE    0x48307200
+
+#else
+
+#error "No board defined!"
+
+#endif
+
+#endif // __BOARD_H__
+

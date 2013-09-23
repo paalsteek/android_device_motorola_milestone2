@@ -2,12 +2,17 @@
 <resources>
 
     <string name="app_name">Milestone2设置</string>
+    <!--Engle-->
+    <string name="general_settings_title">常规设置</string>
 
     <string name="charge_led_mode_title">充电指示灯设置</string>
     <string name="charge_led_mode_summary">调整充电时LED指示灯的显示模式</string>
     <string name="charge_led_mode_white">白色指示灯</string>
     <string name="charge_led_mode_rgb">混合颜色(红/绿混合)</string>
     <string name="charge_led_mode_off">无指示灯</string>
+    <!--Engle-->
+    <string name="button_brightness_scale_title">按钮的亮度</string>
+    <string name="button_brightness_scale_summary">允许使用手动亮度时减少按钮的亮度</string>
 
     <string name="touch_points_title">多点触摸</string>
     <string name="touch_points_summary">设置多点触摸下系统支持的点数</string>
@@ -19,4 +24,45 @@
 
     <string name="touch_point_warning_title">警告</string>
     <string name="touch_point_warning_message">当触摸点数增加时屏幕的灵敏度可能会下降。\n是否保存当前触摸点数设置？</string>
+    <!--Engle-->
+    <string name="audio_settings_title">音频设置</string>
+    <string name="audio_effects">音效和DSP</string>
+    <string name="other_settings_title">其它设置</string>
+    <string name="compass_calibrate">指南针校准</string>
+    
+    <string name="baseband_selection">基带选择</string>
+
+    <string name="reboot_prompt_title">需要重新启动</string>
+    <string name="reboot_prompt_message">为了应用更改后的配置, 需要重新启动. \n\n您想现在重新启动?</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+
+    <string name="region_europe">欧洲</string>
+    <string name="region_america">美国</string>
+    <string name="region_asia">亚洲</string>
+    <string name="region_africa">非洲</string>
+    <string name="region_australia">澳大利亚</string>
+
+    <string name="country_central_europe">中欧</string>
+    <string name="country_france">法国</string>
+    <string name="country_great_britain">英国</string>
+    <string name="country_italy">意大利</string>
+    <string name="country_poland">波兰</string>
+    <string name="country_usa">美国</string>
+    <string name="country_brasil">巴西</string>
+    <string name="country_argentina">阿根廷</string>
+    <string name="country_colombia">哥伦比亚</string>
+    <string name="country_china">中国</string>
+    <string name="country_south_korea">韩国South Korea</string>
+    <string name="country_hongkong_taiwan">香港, 台湾</string>
+    <string name="country_south_east_asia">东南亚</string>
+    <string name="country_arabia">阿拉伯</string>
+    <string name="country_south_africa">南非</string>
+
+    <string name="baseband_selection_summary">请选择适合您所在国家的基带\n当前选择的是: %1$s %2$s</string>
+    <string name="baseband_region">区域</string>
+    <string name="baseband_country">国家</string>
+    <string name="baseband_version">版本</string>
+    <string name="baseband_frequencies">频率: %1$s MHz</string>
+    <string name="unknown">未知</string>
 </resources>

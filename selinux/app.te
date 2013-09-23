@@ -1,0 +1,47 @@
+#============= media_app ==============
+allow media_app block_device:blk_file getattr;
+allow media_app block_device:dir search;
+allow media_app alarm_device:chr_file write;
+allow media_app cache_backup_file:dir getattr;
+allow media_app rootfs:file { read getattr open };
+allow media_app unlabeled:dir { read getattr open remove_name search write };
+allow media_app unlabeled:file { getattr read ioctl unlink open };
+
+#============= platform_app ==============
+allow platform_app alarm_device:chr_file write;
+allow platform_app device:chr_file { read write open };
+allow platform_app init:unix_stream_socket connectto;
+allow platform_app self:netlink_kobject_uevent_socket { bind create setopt read};
+allow platform_app socket_device:sock_file write;
+allow platform_app unlabeled:dir { read getattr open write search add_name };
+allow platform_app unlabeled:file { write create open getattr };
+allow platform_app unlabeled:filesystem getattr;
+
+#============= release_app ==============
+allow release_app alarm_device:chr_file write;
+allow release_app device:chr_file { read write open };
+allow release_app unlabeled:dir { write search getattr };
+allow release_app unlabeled:file { read write getattr open ioctl };
+allow release_app unlabeled:filesystem getattr;
+
+#============= shared_app ==============
+allow shared_app device:chr_file { read write open };
+allow shared_app alarm_device:chr_file write;
+
+#============= system_app ==============
+allow system_app sysfs:file write;
+allow system_app device:chr_file { read write open };
+allow system_app alarm_device:chr_file write;
+allow system_app proc:file write;
+
+#============= unlabeled ==============
+allow unlabeled self:filesystem associate;
+
+#============= untrusted_app ==============
+allow untrusted_app app_data_file:file execute;
+allow untrusted_app device:chr_file { read write open };
+allow untrusted_app unlabeled:dir { write getattr read create open search add_name };
+allow untrusted_app unlabeled:file { write create read getattr open ioctl append };
+allow untrusted_app cache_file:file open;
+allow untrusted_app device:chr_file write;
+allow untrusted_app unlabeled:filesystem getattr;

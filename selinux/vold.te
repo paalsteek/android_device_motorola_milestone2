@@ -1,0 +1,6 @@
+#============= vold ==============
+allow vold fuse_device:chr_file { read write open };
+allow vold self:memprotect mmap_zero;
+allow vold unlabeled:dir { read search open getattr mounton };
+allow vold unlabeled:file { read write open };
+allow vold unlabeled:filesystem { mount getattr };

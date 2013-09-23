@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.os.SystemProperties;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -20,15 +21,15 @@ import java.io.IOException;
 public class DeviceSettings extends PreferenceActivity implements OnPreferenceChangeListener {
     private static final String TAG = "M2Parts";
 
-    private ListPreference keypadTypePref;
     private PreferenceCategory generalSettings;
     private ListPreference chargeLedModePref;
     private ListPreference touchPointsPref;
+    private Preference basebandPref = null;
 
-    private static final String PROP_KEYPAD_TYPE = "persist.sys.keypad_type";
+
     private static final String PROP_CHARGE_LED_MODE = "persist.sys.charge_led";
     private static final String PROP_TOUCH_POINTS = "persist.sys.qtouch_num";
-    private static final String FILE_TOUCH_POINTS = "/proc/qtouch/qtouch_num";
+    private static final String FILE_TOUCH_POINTS = "/proc/multitouch/num";
 
 
     @Override
@@ -37,55 +38,28 @@ public class DeviceSettings extends PreferenceActivity implements OnPreferenceCh
         addPreferencesFromResource(R.xml.settings);
 
         generalSettings = (PreferenceCategory) getPreferenceScreen().findPreference("general");
-        keypadTypePref = (ListPreference) generalSettings.findPreference("keypad_type");
-        keypadTypePref.setOnPreferenceChangeListener(this);
         chargeLedModePref = (ListPreference) generalSettings.findPreference("charge_led_mode");
         chargeLedModePref.setOnPreferenceChangeListener(this);
         touchPointsPref = (ListPreference) generalSettings.findPreference("touch_points");
         touchPointsPref.setOnPreferenceChangeListener(this);
+
+        PreferenceCategory otherSettings = (PreferenceCategory) getPreferenceScreen().findPreference("other");
+        basebandPref = (Preference) otherSettings.findPreference("baseband_selection");
+        basebandPref.setOnPreferenceChangeListener(this);
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        keypadTypePref.setValue(SystemProperties.get(PROP_KEYPAD_TYPE));
         chargeLedModePref.setValue(SystemProperties.get(PROP_CHARGE_LED_MODE));
         touchPointsPref.setValue(SystemProperties.get(PROP_TOUCH_POINTS));
     }
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-    	if (preference == keypadTypePref) {
-    		
-            final String value = (String) newValue;
-            final String oldValue = keypadTypePref.getValue();
-            final CharSequence defaultValue = keypadTypePref.getEntryValues()[0];
-
-            /* only show warning when moving away from the default value */
-            if (TextUtils.equals(value, defaultValue) || !TextUtils.equals(oldValue, defaultValue)) {
-                keypadTypePref.setValue(value);
-                SystemProperties.set(PROP_KEYPAD_TYPE, (String) value);
-            } else {
-                AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle(R.string.keypad_type_warning_title)
-                    .setMessage(R.string.keypad_type_warning_message)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            keypadTypePref.setValue(value);
-                            SystemProperties.set(PROP_KEYPAD_TYPE, (String) value);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, null)
-                    .create();
-
-                dialog.show();
-                return false;
-            }
-
-        }
-    	else if (preference == chargeLedModePref) {
+       if (preference == chargeLedModePref) {
             SystemProperties.set(PROP_CHARGE_LED_MODE, (String) newValue);
             /* make NotificationManagerService update the LED, so the new setting takes effect */
             sendBroadcast(new Intent("com.android.server.NotificationManagerService.UPDATE_LED"));
@@ -114,10 +88,30 @@ public class DeviceSettings extends PreferenceActivity implements OnPreferenceCh
                 dialog.show();
                 return false;
             }
+        } else if (preference == basebandPref) {
+            showRebootPrompt();
         }
 
         return true;
     }
+
+    private void showRebootPrompt() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.reboot_prompt_title)
+                .setMessage(R.string.reboot_prompt_message)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+                        pm.reboot(null);
+                    }
+                })
+                .setNegativeButton(R.string.no, null)
+                .create();
+
+        dialog.show();
+    }
+
 
     private void setTouchPointSetting(String value) {
         /* write the setting into the property to make it apply on next reboot */

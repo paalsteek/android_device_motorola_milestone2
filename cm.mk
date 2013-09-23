@@ -14,21 +14,25 @@
 # limitations under the License.
 #
 
-$(call inherit-product, device/motorola/milestone2/full_milestone2.mk)
+# Boot animation
+TARGET_SCREEN_HEIGHT := 854
+TARGET_SCREEN_WIDTH := 480
 
-# Inherit some common CM stuff.
-$(call inherit-product, vendor/cm/config/common_full_phone.mk)
+$(call inherit-product-if-exists, vendor/cm/config/common_full_phone.mk)
+$(call inherit-product-if-exists, vendor/cm/config/gsm.mk)
+# Add google framework services
+$(call inherit-product, vendor/google/gapps.mk)
+$(call inherit-product, device/moto/milestone2/full_milestone2.mk)
 
-# Inherit some common CM stuff.
-$(call inherit-product, vendor/cm/config/gsm.mk)
+
+DEVICE_PACKAGE_OVERLAYS += device/moto/milestone2/overlay
 
 PRODUCT_NAME := cm_milestone2
-PRODUCT_BRAND := motorola
+PRODUCT_BRAND := MOTO
 PRODUCT_DEVICE := milestone2
-PRODUCT_MODEL := MotoA953
+PRODUCT_MODEL := ME722
 PRODUCT_MANUFACTURER := motorola
-PRODUCT_SBF := 4.1-22
-PRODUCT_SFX := MILS2_U6
+PRODUCT_SFX := DFP
 
 # Release name and versioning
 PRODUCT_RELEASE_NAME := Milestone2
@@ -36,15 +40,20 @@ PRODUCT_RELEASE_NAME := Milestone2
 UTC_DATE := $(shell date +%s)
 DATE     := $(shell date +%Y%m%d)
 
-PRODUCT_BUILD_PROP_OVERRIDES := \
-PRODUCT_NAME=${PRODUCT_MODEL}_${PRODUCT_SFX} \
-TARGET_DEVICE=milestone2 \
-BUILD_FINGERPRINT=motorola/RTGB/umts_milestone2:2.3.4/MILS2_U6_4.1-22/1317097892:user/release-keys \
-PRODUCT_BRAND=MOTO \
-PRIVATE_BUILD_DESC="umts_milestone2-user 2.3.4 MILS2_U6_4.1-22 1317097892 release-keys" \
-BUILD_NUMBER=${DATE} \
-BUILD_VERSION_TAGS=release-keys \
-TARGET_BUILD_TYPE=user \
-USER=kxcr46
+PRODUCT_BUILD_PROP_OVERRIDES += \
+    PRODUCT_NAME=${PRODUCT_MODEL}_${PRODUCT_SFX} \
+    TARGET_DEVICE=milestone2 \
+    BUILD_FINGERPRINT=MOTO/milestone2_china/umts_milestone2:2.3.4/4.5.3-109_MS2-5/111219:user/release-keys \
+    PRIVATE_BUILD_DESC="umts_milestone2_china-user 2.3.4 4.5.3-109_MS2-5 111219 release-keys" \
+    BUILD_NUMBER=${DATE} \
+    BUILD_VERSION_TAGS=release-keys \
+    TARGET_BUILD_TYPE=user
 
+# OTA updater
+PRODUCT_PROPERTY_OVERRIDES += \
+	otaupdater.otaid=Engle_Mars \
+	otaupdater.otatime=$(shell date +%Y%m%d-%H%M) \
+	otaupdater.otaver=$(shell date +%Y-%m-%d_%H_%M) \
+	otaupdater.sdcard.os=sdcard \
+	otaupdater.sdcard.recovery=sdcard
 

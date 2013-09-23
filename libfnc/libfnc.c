@@ -38,76 +38,258 @@ EXPORTS
 
  int TPA_SECCLK_Get_NITZ_Time()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Set_NITZ_Time()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Get_Alarm_Time()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Set_Alarm_Time()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Get_User_Time()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Set_User_Time()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Get_GPS_Time()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int TPA_SECCLK_Set_GPS_Time()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
 //libtpa.so
  int TPA_LIB_KDF_Gen()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
 //libmotodbgutils.so
  int moto_panic()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
 //libsmiledetect.so
  int destroySmileDetectEngine()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
  int createSmileDetectEngine()
 {
- LOGE(__func__);
+ ALOGW(__func__);
 return 0 ;
 }
 
+//libbattd.so
+ int BATTD_send_daemon_cmd()
+{
+ ALOGW(__func__);
+return 0 ;
+}
+
+//libmetainfo.so
+ int MM_MediaExtractor_DetectMediaType()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int MM_MediaExtractor_GetTrackType()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+//libjanus.so
+ int WMDRM_MTPE_CleanDataStore()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int WMDRM_MTPE_GetDeviceCertification()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int WMDRM_MTPE_GetLicenseState()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int WMDRM_MTPE_GetMeterChallenge()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int WMDRM_MTPE_GetSecClock()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int WMDRM_MTPE_GetSecureTimeChallenge()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int WMDRM_MTPE_GetSyncList()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int WMDRM_MTPE_SendWMDRMPDCommand()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int WMDRM_MTPE_SendWMDRMPDRequest()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int WMDRM_MTPE_SetLicenseResponse()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int WMDRM_MTPE_SetMeterResponse()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int WMDRM_MTPE_SetSecureTimeResponse()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_setTty()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_stopTone()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_playTone()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_disableVoicePath()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_enableVoicePath()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_stopDtmf()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_playDtmf()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_getMuteState()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int AUDMGR_setMuteState()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int a2dp_sink_address()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int a2dp_set_sink()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int a2dp_write()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int a2dp_init()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int a2dp_stop()
+{
+ ALOGW(__func__);
+return 0;
+}
+
+ int a2dp_cleanup()
+{
+ ALOGW(__func__);
+return 0;
+}

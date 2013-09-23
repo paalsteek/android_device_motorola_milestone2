@@ -1,0 +1,4 @@
+#============= mediaserver ==============
+allow mediaserver device:chr_file { read write ioctl open };
+allow mediaserver unlabeled:dir { write search add_name };
+allow mediaserver unlabeled:sock_file { create setattr write };

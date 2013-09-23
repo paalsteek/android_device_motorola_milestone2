@@ -1,0 +1,4 @@
+#============= shell ==============
+allow shell rootfs:file getattr;
+allow shell self:capability dac_override;
+allow shell unlabeled:dir getattr;

@@ -1,0 +1,8 @@
+#============= init ==============
+allow init unlabeled:filesystem mount;
+
+#============= init_shell ==============
+allow init_shell sysfs:file write;
+allow init_shell system_data_file:file setattr;
+allow init_shell unlabeled:dir { write remove_name search add_name };
+allow init_shell unlabeled:file { write getattr setattr read create unlink open };

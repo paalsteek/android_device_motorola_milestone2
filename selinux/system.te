@@ -1,0 +1,6 @@
+#============= system ==============
+allow system device:chr_file { read write open };
+allow system device:sock_file write;
+allow system self:capability sys_module;
+allow system unlabeled:dir { write search add_name };
+allow system unlabeled:file { read write create open lock };

@@ -1,0 +1,16 @@
+#!/system/bin/sh
+
+if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ]
+then
+    /system/xbin/echo "2048" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
+fi; 
+
+
+# Engle, for debug
+#mount -t debugfs debugfs /debug
+    
+# Engle, power saving
+echo 1 > /sys/devices/system/cpu/sched_mc_power_savings
+echo 60000 > /sys/kernel/mm/ksm/sleep_millisecs
+# for i in /sys/bus/usb/devices/*/power/autosuspend; do echo 1 > $i; done
+for i in /sys/devices/platform/omap-uart.*/sleep_timeout; do echo 10 > $i; done

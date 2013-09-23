@@ -1,0 +1,14 @@
+#!/system/bin/sh
+#
+
+# Max number of fingers
+MAX_TOUCH=`getprop persist.sys.qtouch_num`
+if [ -z "$MAX_TOUCH" ]; then
+    MAX_TOUCH=2
+fi
+
+#set multitouch number
+echo $MAX_TOUCH > /proc/multitouch/num
+
+ifconfig usb0 up
+ifconfig usb1 up

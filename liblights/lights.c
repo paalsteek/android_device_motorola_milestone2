@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 The Android Open Source Project
+ * Copyright (C) 2011 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 #include <cutils/log.h>
 #include <cutils/properties.h>
 
+#include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <unistd.h>
@@ -58,7 +59,6 @@ char const*const BUTTON_FILE = "/sys/class/leds/button-backlight/brightness";
 char const*const KEYBOARD_FILE = "/sys/class/leds/keyboard-backlight/brightness";
 char const*const BUTTON_BRIGHT_FILE = "/proc/backlight/brightness";
 
-
 /* RGB file descriptors */
 char const*const RED_LED_FILE = "/sys/class/leds/red/brightness";
 char const*const RED_BLINK_FILE = "/sys/class/leds/red/blink";
@@ -75,7 +75,6 @@ void init_globals(void)
 
     g_charge_led_active = 0;
     g_last_button_brightness = -1;
-
 }
 
 static int
@@ -93,7 +92,7 @@ write_int(char const* path, int value)
         return amt == -1 ? -errno : 0;
     } else {
         if (already_warned == 0) {
-            LOGE("write_int failed to open %s\n", path);
+            ALOGE("write_int failed to open %s\n", path);
             already_warned = 1;
         }
         return -errno;
@@ -274,7 +273,6 @@ set_light_battery(struct light_device_t* dev,
     return 0;
 }
 
-
 static int
 set_light_notification(struct light_device_t* dev,
         struct light_state_t const* state)
@@ -331,6 +329,7 @@ static int open_lights(const struct hw_module_t* module, char const* name,
         set_light = set_light_attention;
     }
     else {
+        ALOGW("%s: unknown led id %s", __FUNCTION__, name);
         return -EINVAL;
     }
 
@@ -354,7 +353,7 @@ static struct hw_module_methods_t lights_module_methods = {
     .open =  open_lights,
 };
 
-const struct hw_module_t HAL_MODULE_INFO_SYM = {
+struct hw_module_t HAL_MODULE_INFO_SYM = {
     .tag = HARDWARE_MODULE_TAG,
     .version_major = 1,
     .version_minor = 0,

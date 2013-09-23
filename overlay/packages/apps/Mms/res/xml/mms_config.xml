@@ -29,5 +29,6 @@ unknown
     <int name="maxMessageCountPerThread">5000</int>
     <string name="uaProfUrl">http://www.google.com/oha/rdf/ua-profile-kila.xml</string>
     <int name="recipientLimit">-1</int>
-    <int name="smsToMmsTextThreshold">4</int>
+    <!-- Engle, 禁止将SMS转换为Mms -->
+    <int name="smsToMmsTextThreshold">-1</int>    
 </mms_config>

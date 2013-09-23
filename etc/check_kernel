@@ -1,0 +1,13 @@
+#!/sbin/sh
+# 2.3.4 109 kernel
+SUPPORT_VERSION_109="2.6.32.9-g5db7937"
+# 2.3.4 77 kernel
+SUPPORT_VERSION_77="2.6.32.9-g9552ae9"
+CUR_VERSION="$(uname -r)"
+if [ "${CUR_VERSION}" == "${SUPPORT_VERSION_109}" ] ; then
+   exit 0
+elif [ "${CUR_VERSION}" == "${SUPPORT_VERSION_77}" ] ; then
+   exit 0
+else
+   exit 1
+fi

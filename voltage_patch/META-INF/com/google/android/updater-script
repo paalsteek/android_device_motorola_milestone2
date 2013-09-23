@@ -1,0 +1,20 @@
+ui_print("Check kernel version...");
+
+package_extract_file("system/etc/check_kernel", "/tmp/check_kernel");
+set_perm(0, 2000, 0755, "/tmp/check_kernel");
+assert(run_program("/tmp/check_kernel") == 0);
+delete("/tmp/check_kernel");
+
+ui_print("Install patch...");
+run_program("/sbin/busybox", "mount", "/system");
+show_progress(0.500000, 5);
+
+package_extract_dir("system", "/system");
+set_perm(0, 0, 0664, "system/bootmenu/config/overclock.conf");
+set_perm(0, 0, 0644, "system/etc/gps.conf");
+set_perm(0, 2000, 0755, "system/bootmenu/script/overclock.sh");
+
+show_progress(0.100000, 5);
+
+run_program("/sbin/busybox", "umount", "/system");
+ui_print("Installation complete!");

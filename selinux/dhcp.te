@@ -1,0 +1,3 @@
+#============= dhcp ==============
+allow dhcp self:rawip_socket { write create setopt };
+allow dhcp self:capability sys_admin;

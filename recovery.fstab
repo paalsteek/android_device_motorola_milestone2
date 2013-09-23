@@ -1,12 +1,6 @@
-# This file is used to build the different partitions
-# dont change this file, it is not related to recovery
-#
-# the recovery one  : bootmenu/recovery/recovery.fstab
-# the busybox fstab : prebuilt/etc/busybox.fstab
-#
-# mount point   fstype      device
-/boot           mtd         boot
-/recovery       mtd         recovery
-/system         ext3        system
-/data           ext3        userdata
+# mount point   fstype      device                  [device2]
 
+/cache          ext4        /dev/block/mmcblk1p24
+/data           ext4        /dev/block/mmcblk1p26
+/system         ext3        /dev/block/mmcblk1p21
+/sdcard         auto        /dev/block/mmcblk0p1    /dev/block/mmcblk0
