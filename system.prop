@@ -6,8 +6,6 @@ rild.libpath=/system/lib/libril-moto-umts-1.so
 
 rild.libargs=-d /dev/ttyS0
 
-ro.sf.lcd_density=240
-
 # Default network type.
 # 0 -> GSM/WCDMA (WCDMA preferred)
 # 1 -> GSM only
@@ -92,9 +90,6 @@ hwui.use.blacklist=true
 # CpuGovernorService (require ondemand cpu governor)
 dev.pm.dyn_samplingrate=1
 
-dalvik.vm.heapstartsize=5m
-dalvik.vm.heapsize=72m
-
 #UPNP hack
 ro.wpa6_upnp_hack=1
 
@@ -120,31 +115,3 @@ persist.service.adb.enable=1
 # default root acces
 persist.sys.root_access=3
 #=========================================================================================
-
-#Additional setting
-ro.com.google.locationfeatures=1
-ro.telephony.call_ring.multiple=false
-ro.telephony.call_ring.delay=3000
-ro.media.dec.jpeg.memcap=20000000
-dalvik.vm.lockprof.threshold=500
-ro.kernel.android.checkjni=0
-dalvik.vm.checkjni=false
-dalvik.vm.dexopt-data-only=1
-dalvik.vm.heaptargetutilization=0.75
-dalvik.vm.heapminfree=512k
-dalvik.vm.heapmaxfree=2m
-ro.vold.umsdirtyratio=20
-net.dns1=8.25.56.26
-net.dns2=8.8.8.8
-ro.url.safetylegal=http://www.motorola.com/staticfiles/Support/legal/?model=ME722
-ro.media.capture.maxres=5m
-ro.media.capture.flash=led
-ro.media.capture.flashIntensity=41
-ro.media.capture.torchIntensity=25
-ro.media.capture.classification=classE
-ro.use.fl.rec.boot.upgrade=1
-ro.service.swiqi.supported=true
-persist.service.swiqi.enable=1
-ro.adb.secure=0
-persist.ril.enable=1
-ro.privacy.send.notification=off

@@ -25,38 +25,40 @@ $(call inherit-product, vendor/motorola/milestone2/milestone2-vendor.mk)
 
 ## (3)  Finally, the least specific parts, i.e. the non-GSM-specific aspects
 PRODUCT_PROPERTY_OVERRIDES += \
-	ro.com.google.locationfeatures=1 \
-	ro.telephony.call_ring.multiple=false \
-	ro.telephony.call_ring.delay=3000 \
-	ro.media.dec.jpeg.memcap=20000000 \
-	dalvik.vm.lockprof.threshold=500 \
-	ro.kernel.android.checkjni=0 \
-	dalvik.vm.checkjni=false \
-	dalvik.vm.dexopt-data-only=1 \
-	dalvik.vm.heaptargetutilization=0.75 \
-	dalvik.vm.heapminfree=512k \
-	dalvik.vm.heapmaxfree=2m
-	ro.vold.umsdirtyratio=20 \
-	net.dns1=8.25.56.26 \
-	net.dns2=8.8.8.8 \
-        ro.url.safetylegal=http://www.motorola.com/staticfiles/Support/legal/?model=ME722 \
-	ro.media.capture.maxres=5m \
-	ro.media.capture.flash=led \
-	ro.media.capture.flashIntensity=41 \
-	ro.media.capture.torchIntensity=25 \
-	ro.media.capture.classification=classE \
-	ro.use.fl.rec.boot.upgrade=1 \
-        ro.service.swiqi.supported=true \
-        persist.service.swiqi.enable=1 \
-        ro.sf.lcd_density=240 \ 
-        ro.bq.gpu_to_cpu_unsupported=1 \
-        dalvik.vm.debug.alloc=0 \
-        ro.hwui.disable_scissor_opt=true \
-        ro.hwui.texture_cache_size=12 \
-        ro.hwui.layer_cache_size=8 \
-        ro.hwui.path_cache_size=2 \
-        ro.hwui.text_large_cache_width=4096 \
-        ro.hwui.text_large_cache_height=2048
+    dalvik.vm.checkjni=false \
+    dalvik.vm.debug.alloc=0 \
+    dalvik.vm.dexopt-data-only=1 \
+    dalvik.vm.heapmaxfree=2m \
+    dalvik.vm.heapminfree=512k \
+    dalvik.vm.heapsize=128m \
+    dalvik.vm.heaptargetutilization=0.25 \
+    dalvik.vm.lockprof.threshold=500 \
+    net.dns1=8.25.56.26 \
+    net.dns2=8.8.8.8 \
+    persist.ril.enable=1 \
+    persist.service.swiqi.enable=1 \
+    ro.adb.secure=0 \
+    ro.bq.gpu_to_cpu_unsupported=1 \
+    ro.com.google.locationfeatures=1 \
+    ro.hwui.disable_scissor_opt=true \
+    ro.hwui.layer_cache_size=8 \
+    ro.hwui.path_cache_size=2 \
+    ro.hwui.texture_cache_size=12 \
+    ro.kernel.android.checkjni=0 \
+    ro.media.capture.classification=classE \
+    ro.media.capture.flashIntensity=41 \
+    ro.media.capture.flash=led \
+    ro.media.capture.maxres=5m \
+    ro.media.capture.torchIntensity=25 \
+    ro.media.dec.jpeg.memcap=20000000 \
+    ro.privacy.send.notification=off \
+    ro.service.swiqi.supported=true \
+    ro.sf.lcd_density=240 \
+    ro.telephony.call_ring.delay=3000 \
+    ro.telephony.call_ring.multiple=false \
+    ro.url.safetylegal=http://www.motorola.com/staticfiles/Support/legal/?model=ME722 \
+    ro.use.fl.rec.boot.upgrade=1 \
+    ro.vold.umsdirtyratio=20
 
 # Engle, add bluetooth    
 PRODUCT_PACKAGES += bluetoothd libbluetooth libbluetoothd libbtio liba2dp audio.a2dp.milestone2 libnetcmdiface libdashplayer
@@ -103,7 +105,18 @@ PRODUCT_PACKAGES += recovery
 PRODUCT_PACKAGES += \
 	hcitool hciattach hcidump \
 	libaudioutils audio.a2dp.default  \
-	libaudiohw_legacy \ 
+	libaudiohw_legacy \
+	bluetoothd \
+	libbluetooth \
+	libbluetoothd \
+	libbtio \
+	liba2dp \
+	audio.a2dp.\
+	milestone2 \
+	libnetcmdiface \
+	libdashplayer \
+	dbus-daemon \
+	libdbus \
 
 # Engle should not add power.omap2, it has bug
 #PRODUCT_PACKAGES += hwcomposer.default power.omap3
@@ -145,7 +158,7 @@ PRODUCT_PACKAGES += LiveWallpapers LiveWallpapersPicker
 PRODUCT_PACKAGES += LogCollector
 
 #Engle, Swapper
-PRODUCT_PACKAGES += Swapper
+# PRODUCT_PACKAGES += Swapper
 
 # Experimental TI OpenLink
 PRODUCT_PACKAGES += libnl_2 iw
@@ -153,6 +166,13 @@ PRODUCT_PACKAGES += libnl_2 iw
 PRODUCT_COPY_FILES += \
     $(OUT)/ramdisk.img:system/bootmenu/2nd-boot/ramdisk \
     $(OUT)/kernel:system/bootmenu/2nd-boot/zImage \
+    system/bluetooth/data/main.conf:system/etc/bluetooth/main.conf \
+    system/bluetooth/data/audio.conf:system/etc/bluetooth/audio.conf \
+    system/bluetooth/data/auto_pairing.conf:system/etc/bluetooth/auto_pairing.conf \
+    system/bluetooth/data/blacklist.conf:system/etc/bluetooth/blacklist.conf \
+    system/bluetooth/data/input.conf:system/etc/bluetooth/input.conf \
+    system/bluetooth/data/network.conf:system/etc/bluetooth/network.conf \
+
 
 #    $(OUT)/utilities/lsof:system/bootmenu/binary/lsof \
 
