@@ -51,7 +51,7 @@ PRODUCT_BUILD_PROP_OVERRIDES += \
 
 # OTA updater
 PRODUCT_PROPERTY_OVERRIDES += \
-	otaupdater.otaid=Engle_Mars \
+	otaupdater.otaid=paalsteek \
 	otaupdater.otatime=$(shell date +%Y%m%d-%H%M) \
 	otaupdater.otaver=$(shell date +%Y-%m-%d_%H_%M) \
 	otaupdater.sdcard.os=sdcard \
