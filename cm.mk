@@ -21,7 +21,7 @@ TARGET_SCREEN_WIDTH := 480
 $(call inherit-product-if-exists, vendor/cm/config/common_full_phone.mk)
 $(call inherit-product-if-exists, vendor/cm/config/gsm.mk)
 # Add google framework services
-$(call inherit-product, vendor/google/gapps.mk)
+#$(call inherit-product, vendor/google/gapps.mk)
 $(call inherit-product, device/moto/milestone2/full_milestone2.mk)
 
 
