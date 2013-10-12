@@ -66,8 +66,8 @@ PRODUCT_COPY_FILES += \
         $(device_path)/etc/hosts:system/etc/hosts \
 
 # engle, 添加节能脚本
-#PRODUCT_COPY_FILES += \
-#    $(device_path)/etc/init.d/99smart_tweak:system/etc/init.d/99smart_tweak \
+PRODUCT_COPY_FILES += \
+    $(device_path)/etc/init.d/99smart_tweak:system/etc/init.d/99smart_tweak \
 
 # New CM9 backup list system (addon.d)
 PRODUCT_COPY_FILES += \

@@ -6,6 +6,7 @@
 obj-m += symsearch/
 obj-m += overclock/
 obj-m += backlight/
+obj-m += boostedASSv2/
 obj-m += cpcap-battery/
 #obj-m += debounce/
 obj-m += qtouch_num/
@@ -23,7 +24,6 @@ obj-m += hbootmod/
 
 # experimental
 #obj-m += ion/
-
 
 PWD := $(shell pwd)
 

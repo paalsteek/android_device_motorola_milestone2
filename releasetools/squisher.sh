@@ -9,7 +9,9 @@
 
 # Delete unwanted apps
 rm -f $REPACK/ota/system/app/RomManager.apk
+rm -f $REPACK/ota/system/app/RomManager.odex
 rm -f $REPACK/ota/system/app/VideoEditor.apk
+rm -f $REPACK/ota/system/app/VideoEditor.odex
 rm -f $REPACK/ota/system/lib/libvideoeditor*
 PWD_PATH=`pwd`
 # Engle 删除Ringtones

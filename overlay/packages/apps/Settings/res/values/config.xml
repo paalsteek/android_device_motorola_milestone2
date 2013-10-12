@@ -30,4 +30,10 @@
 
     <!-- Volume rocker support. Some devices does not have volume rocker. -->
     <bool name="has_volume_rocker">true</bool>
+    <!-- Whether the device support custom performance profiles. Leave empty when
+         the device do not support it. -->
+    <string name="config_perf_profile_prop" translatable="false">sys.cpu.mode</string>
+    <!-- When config_perf_profile_prop = true, then this value MUST be one of the
+    	 values listed in cm_arrays for perf_profile_values -->
+    <string name="config_perf_profile_default_entry" translatable="false">1</string>
 </resources>

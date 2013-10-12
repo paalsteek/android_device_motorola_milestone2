@@ -1,0 +1,48 @@
+####################################################################
+
+                          boostedASSv2
+
+          # A modified smartassv2 governor experience
+
+####################################################################
+
+      /*
+       * Currently works with DROID X, DROID X2, DROID 2/G, DROID 3, DROID BIONIC,
+       * and DROID RAZR
+       * 
+       * Other DROID devices may compile but may not actually work and are untested
+       */
+
+      /* 
+       * Pre-reqs:
+       * ---------
+       * !! Must have Android Source on system
+       * !! Must have device kernel on system and compiled (available on SourceForge)
+       */
+
+
+===========================::Compiling::==============================
+       
+#cd to your directory (~/android/boostedASSv2 will be used in this tut)
+
+cd ~/android/boostedASSv2
+
+#edit the makefile to point to to the toolchain from source [CCPATH] and your compiled device kernel source [KERNEL__DIR]
+# my toolchain from source is in WORKING_DIRECTORY
+
+CCPATH := ~/android/WORKING_DIRECTORY/prebuilt/linux-x86/toolchain/arm-eabi-4.2.1/bin
+KERNEL_DIR ?= ~/android/dxkernel/omap3
+
+#execute it
+
+make 
+
+#remove intermediate files
+
+make strip
+
+#PROFIT
+
+
+
+

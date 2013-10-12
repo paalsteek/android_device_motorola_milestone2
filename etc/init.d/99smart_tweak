@@ -1,186 +1,205 @@
 #!/system/bin/sh
 #
 #Create by Cenculko!!!#
+#Changed by Engle_Mars
 #
+DEBUG_ECHO=0
 
-#Minfree-
-echo "2048,3072,6144,15360,17920,20480" > /sys/module/lowmemorykiller/parameters/minfree
+function debugEcho() {
+	if [ $DEBUG_ECHO = 1 ]; then
+		echo "LST Debug: $*";
+	fi
+}
 
-#VM managment tweaks-
-echo "4096" > /proc/sys/vm/min_free_kbytes
-echo "0" > /proc/sys/vm/oom_kill_allocating_task;
-echo "0" > /proc/sys/vm/panic_on_oom;
-echo "0" > /proc/sys/vm/laptop_mode;
-echo "0" > /proc/sys/vm/swappiness
-echo "50" > /proc/sys/vm/vfs_cache_pressure
-echo "90" > /proc/sys/vm/dirty_ratio
-echo "70" > /proc/sys/vm/dirty_background_ratio
+function setSystemParam() {
+  debugEcho "Call setSystemParam"
+	#Minfree-
+	echo "2048,3072,6144,15360,17920,20480" > /sys/module/lowmemorykiller/parameters/minfree
 
-#Misc kernel tweaks-
-echo "8" > /proc/sys/vm/page-cluster;
-echo "64000" > /proc/sys/kernel/msgmni;
-echo "64000" > /proc/sys/kernel/msgmax;
-echo "10" > /proc/sys/fs/lease-break-time;
-echo "500,512000,64,2048" > /proc/sys/kernel/sem;
+	#VM managment tweaks-
+	echo "4096" > /proc/sys/vm/min_free_kbytes
+	echo "0" > /proc/sys/vm/oom_kill_allocating_task;
+	echo "0" > /proc/sys/vm/panic_on_oom;
+	echo "0" > /proc/sys/vm/laptop_mode;
+	echo "0" > /proc/sys/vm/swappiness
+	echo "50" > /proc/sys/vm/vfs_cache_pressure
+	echo "90" > /proc/sys/vm/dirty_ratio
+	echo "70" > /proc/sys/vm/dirty_background_ratio
 
+	#Misc kernel tweaks-
+	echo "8" > /proc/sys/vm/page-cluster;
+	echo "64000" > /proc/sys/kernel/msgmni;
+	echo "64000" > /proc/sys/kernel/msgmax;
+	echo "10" > /proc/sys/fs/lease-break-time;
+	echo "500,512000,64,2048" > /proc/sys/kernel/sem;
 
-#Battery tweaks-
-echo "500" > /proc/sys/vm/dirty_expire_centisecs
-echo "1000" > /proc/sys/vm/dirty_writeback_centisecs
+	#Battery tweaks-
+	echo "500" > /proc/sys/vm/dirty_expire_centisecs
+	echo "1000" > /proc/sys/vm/dirty_writeback_centisecs
 
+	#MicroSD card speed tweaks-
+	#echo "2048" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
 
-#MicroSD card speed tweaks-
-#echo "2048" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
+	#Ondemand governor tweaks-
+	SAMPLING_RATE=$(busybox expr `cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_transition_latency` \* 750 / 1000)
+	echo 95 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+	echo $SAMPLING_RATE > /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate
+}
+#Juwe´s ram tweak-
+function ramTweak() {
 
+	if [ -e /sys/module/lowmemorykiller/parameters/adj ]; then
+		echo "0,1,2,4,6,15" > /sys/module/lowmemorykiller/parameters/adj
+	fi
 
-#Ondemand governor tweaks-
-SAMPLING_RATE=$(busybox expr `cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_transition_latency` \* 750 / 1000)
-echo 95 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
-echo $SAMPLING_RATE > /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate
+	if [ -e /sys/module/lowmemorykiller/parameters/minfree ]; then
+		echo "2560,4096,6144,12288,14336,18432" > /sys/module/lowmemorykiller/parameters/minfree
+	fi
 
+	if [ -e /proc/sys/vm/swappiness ]; then
+		echo "10" > /prodebugEchoc/sys/vm/swappiness
+	fi
+
+	if [ -e /proc/sys/vm/vfs_cache_pressure ]; then
+		echo "50" > /proc/sys/vm/vfs_cache_pressure
+	fi
+
+	if [ -e /proc/sys/vm/dirty_expire_centisecs ]; then
+		echo "3000" > /proc/sys/vm/dirty_expire_centisecs
+	fi
+
+	if [ -e /proc/sys/vm/dirty_writeback_centisecs ]; then
+		echo "500" > /proc/sys/vm/dirty_writeback_centisecs
+	fi
+
+	if [ -e /proc/sys/vm/dirty_ratio ]; then
+		echo "22" > /proc/sys/vm/dirty_ratio
+	fi
+
+	if [ -e /proc/sys/vm/dirty_background_ratio ]; then
+		echo "4" > /proc/sys/vm/dirty_background_ratio
+	fi
+}
+# Pause and then loop until kswapd0 is found, which should be instant anyway
+function waitForSystemStartup() {
+	PNAME="kswapd0"
+	SWAP_SLEEP_TIME=3;
+	SWAP_NUMBER_OF_CHECKS=30;
+	SWAP_CHECK_COUNT=0;
+	SWAP_CHECK_COUNT_OK=0;
+	while [ $SWAP_CHECK_COUNT -lt $SWAP_NUMBER_OF_CHECKS ]; 
+	do
+		if [ `pidof $PNAME` ]; then 
+			renice 19 `pidof $PNAME`;
+			SWAP_CHECK_COUNT=$SWAP_NUMBER_OF_CHECKS;
+			SWAP_CHECK_COUNT_OK=1;
+		else
+			sleep $SWAP_SLEEP_TIME; 
+		fi;
+		SWAP_CHECK_COUNT=`expr $SWAP_CHECK_COUNT + 1`;
+	done;
+
+	if [ $SWAP_CHECK_COUNT_OK -lt 1 ]; then
+		debugEcho "'kswapd0' expired after `expr $SWAP_CHECK_COUNT \* $SWAP_SLEEP_TIME` seconds";
+	fi;
+
+	debugEcho "$(date)\n" "kswapd0 found";
+}
 
 #Loopy smoothness tweak-
-for n in 1 2
-do
+function processPriTweak() {
+	for n in 1 2
+	do
+		USER_LAUNCHER="com.cyanogenmod.trebuchet"	# Change this to your launcher app
 
-  USER_LAUNCHER="com.cyanogenmod.trebuchet.Launcher"	# Change this to your launcher app
+		PROCESS_NAME=("com.android.phone"
+	                $USER_LAUNCHER
+	                "com.android.systemui"
+	                "android.process.acore"
+	                "android.process.media");
+		#Less number will higher running PRI.
+		PROCESS_PRI=(-19
+	               -18
+	               -17
+	               -5
+	               10);
+		PROCESS_ST=(0 0 0 0 0);
 
-  NUMBER_OF_CHECKS=60					# Total number of rechecks before ending 1st loop
-  SLEEP_TIME=3						# Number of seconds between rechecking processes
-  PROCESSES_TOTAL=14					# Must be edited to match the number of processes to be checked
-  DEBUG_ECHO=0						# Debug on/off
+		# Total number of rechecks before ending 1st loop
+		NUMBER_OF_CHECKS=60
+		# Number of seconds between rechecking processes
+		SLEEP_TIME=3
+		# Must be edited to match the number of processes to be checked
+		PROCESSES_TOTAL=${#PROCESS_NAME[*]};
+		# Don't edit
+		CHECK_COUNT=0
+		# Don't edit
+		P_CHECK=0
 
-  CHECK_COUNT=0						# Don't edit
-  P_CHECK=0						# Don't edit
-  CHECK_OK=0						# Unused
+		if [ $n -eq "1" ]; then
+			debugEcho "$(date)\n" "Initiate"
+			waitForSystemStartup;
+			#setSystemParam;
+		fi;
 
-  PROCESS_1=0; PROCESS_2=0; PROCESS_3=0; PROCESS_4=0; PROCESS_5=0; PROCESS_6=0;
-  PROCESS_7=0; PROCESS_8=0; PROCESS_9=0; PROCESS_10=0; PROCESS_11=0; PROCESS_12=0;
-  PROCESS_13=0; PROCESS_14=0; PROCESS_15=0; PROCESS_16=0; PROCESS_17=0; PROCESS_18=0;
-  PROCESS_19=0; PROCESS_20=0; PROCESS_21=0; PROCESS_22=0; PROCESS_23=0; PROCESS_24=0;
+		# Check briefly one more time
+		if [ $n -eq "2" ]; then
+			debugEcho "2nd loop"
+			NUMBER_OF_CHECKS=6					# Editing not recommended
+			SLEEP_TIME=5					# Editing not recommended
+		fi;
 
-  if [ $n -eq "1" ]; then
-    if [ $DEBUG_ECHO -eq "1" ]; then
-      echo ""
-      echo "LST Debug: $(date)"
-      echo "LST Debug: Initiate"
-    fi;
+		while [ $CHECK_COUNT -lt $NUMBER_OF_CHECKS ];
+		do
+			debugEcho "CHECK_COUNT is $CHECK_COUNT, NUMBER_OF_CHECKS is $NUMBER_OF_CHECKS";
+			# Resident system apps
+			INDEX=0;
+			while [ $INDEX -lt $PROCESSES_TOTAL ];
+			do
+				PID=`pidof ${PROCESS_NAME[INDEX]}`;
+				debugEcho "Set process '${PROCESS_NAME[INDEX]}:$PID' PRI to ${PROCESS_PRI[$INDEX]}";
+				if [[ ( -n "$PID" ) && ( ${PROCESS_ST[$INDEX]} -eq "0" ) ]]; then 					
+					NPRI=${PROCESS_PRI[$INDEX]};
+					if [ $NPRI -lt 0 ]; then
+						NPRI=`expr 0 - $NPRI`;
+						renice -n $NPRI $PID;
+					else
+						renice $NPRI $PID;
+					fi;
+					PROCESS_ST[$INDEX]=1;
+					debugEcho "Process '${PROCESS_NAME[INDEX]}' ST is ${PROCESS_ST[$INDEX]}";
+					P_CHECK=`expr $P_CHECK + 1`; 
+				fi;
+				INDEX=`expr $INDEX + 1`
+			done;
 
-    # Pause and then loop until kswapd0 is found, which should be instant anyway
-    sleep 1
-    SWAP_SLEEP_TIME=3; SWAP_NUMBER_OF_CHECKS=30; SWAP_CHECK_COUNT=0; SWAP_CHECK_COUNT_OK=0; while [ $SWAP_CHECK_COUNT -lt $SWAP_NUMBER_OF_CHECKS ]; do if [ `pidof kswapd0` ]; then renice 19 `pidof kswapd0`; SWAP_CHECK_COUNT=$SWAP_NUMBER_OF_CHECKS; SWAP_CHECK_COUNT_OK=1; else sleep $SWAP_SLEEP_TIME; fi; SWAP_CHECK_COUNT=`expr $SWAP_CHECK_COUNT + 1`; done; if [ $SWAP_CHECK_COUNT_OK -lt 1 ]; then echo "LST Debug: 'kswapd0' expired after `expr $SWAP_CHECK_COUNT \* $SWAP_SLEEP_TIME` seconds"; fi;
+			debugEcho "P_CHECK is $P_CHECK, PROCESSES_TOTAL is $PROCESSES_TOTAL";
 
-    if [ $DEBUG_ECHO -eq "1" ]; then
-      echo "LST Debug: $(date)";
-      echo "LST Debug: kswapd0 found";
-    fi;
-  fi;
+			# If all processes are done, loop can finish early
+			if [ $P_CHECK -ge $PROCESSES_TOTAL ]; then 
+				CHECK_COUNT=$NUMBER_OF_CHECKS;
+			else
+				sleep $SLEEP_TIME; 
+			fi;
 
-  # Check briefly one more time
-  if [ $n -eq "2" ]; then
-    if [ $DEBUG_ECHO -eq "1" ]; then
-      echo "LST Debug: 2nd loop"
-    fi;
-    NUMBER_OF_CHECKS=6					# Editing not recommended
-    SLEEP_TIME=5					# Editing not recommended
-  fi;
+			CHECK_COUNT=`expr $CHECK_COUNT + 1`;
+		done
 
-  while [ $CHECK_COUNT -lt $NUMBER_OF_CHECKS ];
-  do
-    # Resident system apps
-    if [ $PROCESS_1 -eq "0" ]; then PNAME="com.android.phone"; NICELEVEL=-20; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_1=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-    if [ $PROCESS_2 -eq "0" ]; then PNAME="com.android.systemui"; NICELEVEL=-18; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_2=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-    if [ $PROCESS_3 -eq "0" ]; then PNAME="com.android.settings"; NICELEVEL=-18; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_3=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-    if [ $PROCESS_4 -eq "0" ]; then PNAME="com.swype.android.inputmethod"; NICELEVEL=-18; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_4=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-    if [ $PROCESS_5 -eq "0" ]; then PNAME="$USER_LAUNCHER"; NICELEVEL=-18; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_5=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-    if [ $PROCESS_6 -eq "0" ]; then PNAME="com.android.vending"; NICELEVEL=-18; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_6=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-    if [ $PROCESS_7 -eq "0" ]; then PNAME="com.android.mms"; NICELEVEL=-19; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_7=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-    if [ $PROCESS_8 -eq "0" ]; then PNAME="android.process.acore"; NICELEVEL=-3; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_8=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-    if [ $PROCESS_9 -eq "0" ]; then PNAME="android.process.media"; NICELEVEL=-3; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_9=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+		if [ $DEBUG_ECHO -eq "1" ]; then
+			debugEcho "$(date)"
+			INDEX=0;
+			while [ $INDEX -lt $PROCESSES_TOTAL ];
+			do
+				debugEcho "${PROCESS_NAME[$INDEX]} expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds";
+				INDEX=`expr $INDEX + 1`;
+			done;
+			debugEcho " Checking complete"
+	  fi;
 
-    # Other system apps
-    if [ $PROCESS_10 -eq "0" ]; then PNAME="com.sec.android.app.dialertab"; NICELEVEL=-19; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_10=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-    if [ $PROCESS_11 -eq "0" ]; then PNAME="com.sec.android.app.samsungapps.una"; NICELEVEL=-19; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_11=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-    if [ $PROCESS_12 -eq "0" ]; then PNAME="com.sec.android.app.controlpanel"; NICELEVEL=-18; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_12=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-    if [ $PROCESS_13 -eq "0" ]; then PNAME="samsungani"; NICELEVEL=19; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_13=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+	done
 
-    # org.adwfreak.launcher
-    # org.zeam.core
+	debugEcho "Done"
+}
 
-    # Other apps
-    if [ $PROCESS_14 -eq "0" ]; then PNAME="com.speedsoftware.rootexplorer"; NICELEVEL=-15; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_14=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-#    if [ $PROCESS_15 -eq "0" ]; then PNAME=""; NICELEVEL=-15; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_15=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-#    if [ $PROCESS_16 -eq "0" ]; then PNAME=""; NICELEVEL=-15; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_16=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-#    if [ $PROCESS_17 -eq "0" ]; then PNAME=""; NICELEVEL=-15; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_17=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-#    if [ $PROCESS_18 -eq "0" ]; then PNAME=""; NICELEVEL=-15; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_18=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
-
-    # If all processes are done, loop can finish early
-    if [ $P_CHECK -ge $PROCESSES_TOTAL ]; then CHECK_COUNT=$NUMBER_OF_CHECKS; else sleep $SLEEP_TIME; fi;
-
-    CHECK_COUNT=`expr $CHECK_COUNT + 1`;
-  done
-
-  if [ $DEBUG_ECHO -eq "1" ]; then
-    echo "LST Debug: $(date)"
-    if [ $PROCESS_1 -eq "0" ]; then echo "LST Debug: PROCESS_1 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-    if [ $PROCESS_2 -eq "0" ]; then echo "LST Debug: PROCESS_2 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-    if [ $PROCESS_3 -eq "0" ]; then echo "LST Debug: PROCESS_3 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-    if [ $PROCESS_4 -eq "0" ]; then echo "LST Debug: PROCESS_4 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-    if [ $PROCESS_5 -eq "0" ]; then echo "LST Debug: PROCESS_5 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-    if [ $PROCESS_6 -eq "0" ]; then echo "LST Debug: PROCESS_6 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-    if [ $PROCESS_7 -eq "0" ]; then echo "LST Debug: PROCESS_7 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-    if [ $PROCESS_8 -eq "0" ]; then echo "LST Debug: PROCESS_8 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-    if [ $PROCESS_9 -eq "0" ]; then echo "LST Debug: PROCESS_9 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-    if [ $PROCESS_10 -eq "0" ]; then echo "LST Debug: PROCESS_10 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-    if [ $PROCESS_11 -eq "0" ]; then echo "LST Debug: PROCESS_11 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-    if [ $PROCESS_12 -eq "0" ]; then echo "LST Debug: PROCESS_12 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-    if [ $PROCESS_13 -eq "0" ]; then echo "LST Debug: PROCESS_13 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-    if [ $PROCESS_14 -eq "0" ]; then echo "LST Debug: PROCESS_14 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-#    if [ $PROCESS_15 -eq "0" ]; then echo "LST Debug: PROCESS_15 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-#    if [ $PROCESS_16 -eq "0" ]; then echo "LST Debug: PROCESS_16 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-#    if [ $PROCESS_17 -eq "0" ]; then echo "LST Debug: PROCESS_17 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-#    if [ $PROCESS_18 -eq "0" ]; then echo "LST Debug: PROCESS_18 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
-
-    echo "LST Debug: Checking complete"
-  fi;
-
-done
-
-if [ $DEBUG_ECHO -eq "1" ]; then
-  echo "LST Debug: Done"
-  echo ""
-fi;
-
-#Juwe´s ram tweak-
-if [ -e /sys/module/lowmemorykiller/parameters/adj ]; then
-	echo "0,1,2,4,6,15" > /sys/module/lowmemorykiller/parameters/adj
-fi
-
-if [ -e /sys/module/lowmemorykiller/parameters/minfree ]; then
-	echo "2560,4096,6144,12288,14336,18432" > /sys/module/lowmemorykiller/parameters/minfree
-fi
-
-if [ -e /proc/sys/vm/swappiness ]; then
-	echo "10" > /proc/sys/vm/swappiness
-fi
-
-if [ -e /proc/sys/vm/vfs_cache_pressure ]; then
-	echo "50" > /proc/sys/vm/vfs_cache_pressure
-fi
-
-if [ -e /proc/sys/vm/dirty_expire_centisecs ]; then
-	echo "3000" > /proc/sys/vm/dirty_expire_centisecs
-fi
-
-if [ -e /proc/sys/vm/dirty_writeback_centisecs ]; then
-	echo "500" > /proc/sys/vm/dirty_writeback_centisecs
-fi
-
-if [ -e /proc/sys/vm/dirty_ratio ]; then
-	echo "22" > /proc/sys/vm/dirty_ratio
-fi
-
-if [ -e /proc/sys/vm/dirty_background_ratio ]; then
-	echo "4" > /proc/sys/vm/dirty_background_ratio
-fi
+processPriTweak;
 

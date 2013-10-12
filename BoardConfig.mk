@@ -28,6 +28,8 @@
 #Engle, 只编译英文和中文
 PRODUCT_LOCALES := zh_CN en_US
 WITH_DEXPREOPT := true
+WITH_GMS := true
+USE_PREBUILT_RECOVERY := true
 
 #Engle, SELINUX
 HAVE_SELINUX := true
@@ -89,6 +91,10 @@ endif
 TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp 
 TARGET_arm_CFLAGS := mtune=cortex-a8 -mfpu=neon -O3
+
+#TARGET_GLOBAL_CFLAGS += -O2 -mtune=cortex-a8 -march=armv7-a -mfpu=neon -mfloat-abi=softfp -funroll-loops
+#TARGET_GLOBAL_CPPFLAGS += -O2 -mtune=cortex-a8 -march=armv7-a -mfpu=neon -mfloat-abi=softfp -funroll-loops
+#TARGET_arm_CFLAGS := -O2 -mtune=cortex-a8 -march=armv7-a -mfpu=neon -mfloat-abi=softfp -funroll-loops
 #TARGET_arm_CFLAGS := -O3 -fomit-frame-pointer -fstrict-aliasing -funswitch-loops \
 #                       -fmodulo-sched -fmodulo-sched-allow-regmoves
 #TARGET_thumb_CFLAGS := -mthumb \
@@ -267,7 +273,9 @@ ext_modules:
 	$(API_MAKE) -C $(TARGET_KERNEL_MODULES_EXT) modules
 	find $(TARGET_KERNEL_MODULES_EXT)/ -name "*.ko" -exec mv {} \
 		$(KERNEL_MODULES_OUT) \; || true
+ifneq ($(strip $(USE_PREBUILT_RECOVERY)),true)
 	mv $(KERNEL_MODULES_OUT)/hbootmod.ko $(PRODUCT_OUT)/system/bootmenu/2nd-boot/
+endif
 	$(API_MAKE) clean -C $(TARGET_MODULES_WIFI_SOURCE)
 	$(API_MAKE) clean -C $(TARGET_MODULES_AP_SOURCE)
 	$(API_MAKE) -C $(TARGET_MODULES_WIFI_SOURCE) HOST_PLATFORM=zoom2 KERNEL_DIR=$(KERNEL_OUT)
@@ -277,12 +285,17 @@ ext_modules:
 	arm-linux-androideabi-strip --strip-unneeded $(KERNEL_MODULES_OUT)/*
 
 hboot:
-	mkdir -p $(PRODUCT_OUT)/system/bootmenu/2nd-boot   
-	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline  
+	mkdir -p $(PRODUCT_OUT)/system/bootmenu/2nd-boot
+	echo "$(BOARD_KERNEL_CMDLINE)" > $(PRODUCT_OUT)/system/bootmenu/2nd-boot/cmdline
+ifneq ($(strip $(USE_PREBUILT_RECOVERY)),true)
 	$(API_MAKE) -C $(ANDROID_BUILD_TOP)/device/moto/milestone2/hboot
 	mv $(ANDROID_BUILD_TOP)/device/moto/milestone2/hboot/hboot.bin $(PRODUCT_OUT)/system/bootmenu/2nd-boot/
 	$(API_MAKE) clean -C $(ANDROID_BUILD_TOP)/device/moto/milestone2/hboot
+else
+	cp -rf $(ANDROID_BUILD_TOP)/device/moto/milestone2/prebuilt/bootmenu $(PRODUCT_OUT)/system/
+	$(shell if [ -f $(PRODUCT_OUT)/system/lib/modules/hbootmod.ko ]; then rm -r $(PRODUCT_OUT)/system/lib/modules/hbootmod.ko; fi;)
 
+endif
 # If kernel sources are present in repo, here is the location
 TARGET_KERNEL_SOURCE := $(ANDROID_BUILD_TOP)/kernel/moto/milestone2
 TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
@@ -293,3 +306,4 @@ BOARD_KERNEL_CMDLINE := console=/dev/null mem=498M init=/init ip=off brdrev=P3A 
 TARGET_KERNEL_MODULES_EXT := $(ANDROID_BUILD_TOP)/device/moto/milestone2/modules/sources/
 TARGET_KERNEL_MODULES :=  ext_modules hboot
 
+BOARD_HARDWARE_CLASS := device/moto/milestone2/cmhw/

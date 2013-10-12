@@ -26,7 +26,6 @@ $(call inherit-product, vendor/motorola/milestone2/milestone2-vendor.mk)
 ## (3)  Finally, the least specific parts, i.e. the non-GSM-specific aspects
 PRODUCT_PROPERTY_OVERRIDES += \
     dalvik.vm.checkjni=false \
-    dalvik.vm.debug.alloc=0 \
     dalvik.vm.dexopt-data-only=1 \
     dalvik.vm.heapmaxfree=2m \
     dalvik.vm.heapminfree=512k \

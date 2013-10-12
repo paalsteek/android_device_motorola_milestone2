@@ -2,6 +2,8 @@
 
 #Android & Google Services START
 127.0.0.1	localhost
+127.0.0.1       media.admob.com
+127.0.0.1       googleads.g.doubleclick.net
 
 173.194.72.84	accounts.google.com
 #173.194.72.84	www.google.com

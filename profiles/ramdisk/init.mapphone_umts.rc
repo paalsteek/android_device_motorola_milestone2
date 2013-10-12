@@ -52,6 +52,7 @@ on post-fs
     insmod /system/lib/modules/qtouch_unload.ko
     insmod /system/lib/modules/qtouch_obp_ts2.ko
     insmod /system/lib/modules/qtouch_num.ko
+    insmod /system/lib/modules/cpufreq_boostedASS2.ko
 
 # Backward compatibility
     symlink /dev /dev/netmux
@@ -150,6 +151,7 @@ on post-fs-data
     chmod 0770 /data/bp_nvm
     # create location directory
     mkdir /data/location 0771 radio radio
+    chmod 0777 /data/location
     # create opprof directory
     mkdir /data/opprof 0770 radio shell
     # create dropbear directory
